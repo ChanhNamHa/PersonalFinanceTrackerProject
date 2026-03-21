@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="PersonalFinanceTracker.API/PersonalFinanceTracker.API.csproj" Id="aac24064-9f88-4ad0-8e0d-a644645dc2a8" />
+  <Project Path="PersonalFinanceTracker.Application/PersonalFinanceTracker.Application.csproj" />
+  <Project Path="PersonalFinanceTracker.Domain/PersonalFinanceTracker.Domain.csproj" />
+  <Project Path="PersonalFinanceTracker.Infrastructure/PersonalFinanceTracker.Infrastructure.csproj" />
+</Solution>

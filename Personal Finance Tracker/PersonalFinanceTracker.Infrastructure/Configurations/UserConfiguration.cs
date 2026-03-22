@@ -8,35 +8,45 @@ namespace PersonalFinanceTracker.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            // 1. Khóa chính
+            // 1. Khóa chính - Sử dụng Sequential GUID để tối ưu Insert
             builder.HasKey(u => u.Id);
+            builder.Property(u => u.Id)
+                .HasDefaultValueSql("NEWSEQUENTIALID()");
 
             // 2. Định danh và Bảo mật
             builder.Property(u => u.Username)
                 .HasMaxLength(50)
                 .IsRequired();
-
+            builder.HasIndex(u => u.Username).IsUnique();
             builder.Property(u => u.Email)
                 .HasMaxLength(150)
                 .IsRequired();
 
-            // Tạo Index Unique cho Email để không có 2 tài khoản trùng email
+            // Tạo Index Unique cho Email (Rất quan trọng để tránh trùng lặp tài khoản)
             builder.HasIndex(u => u.Email).IsUnique();
 
             builder.Property(u => u.PasswordHash)
                 .IsRequired();
 
-            // 3. Cấu hình Refresh Token (Dùng cho cơ chế gia hạn JWT)
+            // 3. Cấu hình Refresh Token
             builder.Property(u => u.RefreshToken)
-                .HasMaxLength(500); // Lưu trữ chuỗi token ngẫu nhiên
+                .HasMaxLength(500)
+                .IsRequired(false); // Cho phép Null ban đầu
 
             builder.Property(u => u.RefreshTokenExpiryTime)
+                .HasColumnType("datetime2")
                 .IsRequired(false);
 
-            // 4. Quan hệ (Đã được định nghĩa từ phía Transaction/Budget nhưng khai báo thêm để tường minh)
+            // 4. Quan hệ (Đã tường minh qua Transaction/Budget)
+            // Cascade Delete: Khi xóa User, các Giao dịch và Ngân sách của họ sẽ bị xóa theo
             builder.HasMany(u => u.Transactions)
                 .WithOne(t => t.User)
                 .HasForeignKey(t => t.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(u => u.Budgets)
+                .WithOne(b => b.User)
+                .HasForeignKey(b => b.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

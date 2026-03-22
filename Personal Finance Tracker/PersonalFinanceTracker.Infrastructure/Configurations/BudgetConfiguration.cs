@@ -10,15 +10,23 @@ namespace PersonalFinanceTracker.Infrastructure.Configurations
         {
             // 1. Khóa chính
             builder.HasKey(b => b.Id);
+            builder.Property(b => b.Id)
+                .HasDefaultValueSql("NEWSEQUENTIALID()");
 
             // 2. Số tiền hạn mức (Precision 18,2)
             builder.Property(b => b.LimitAmount)
+                .HasColumnType("decimal(18,2)")
                 .HasPrecision(18, 2)
                 .IsRequired();
 
             // 3. Thời gian áp dụng ngân sách
-            builder.Property(b => b.StartDate).IsRequired();
-            builder.Property(b => b.EndDate).IsRequired();
+            builder.Property(b => b.StartDate)
+                .HasColumnType("datetime2")
+                .IsRequired();
+
+            builder.Property(b => b.EndDate)
+                .HasColumnType("datetime2")
+                .IsRequired();
 
             // 4. Quan hệ với User
             builder.HasOne(b => b.User)
@@ -28,13 +36,13 @@ namespace PersonalFinanceTracker.Infrastructure.Configurations
 
             // 5. Quan hệ với Category
             builder.HasOne(b => b.Category)
-                .WithMany()
+                .WithMany(c => c.Budgets)
                 .HasForeignKey(b => b.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
-            // Không cho xóa Category nếu đang có một bản kế hoạch ngân sách gắn với nó.
 
-            // 6. Tối ưu hóa: Thường xuyên lọc ngân sách theo User và thời gian
-            builder.HasIndex(b => new { b.UserId, b.StartDate, b.EndDate });
+            // 6. Tối ưu hóa truy vấn
+            builder.HasIndex(b => new { b.UserId, b.StartDate, b.EndDate })
+                .HasDatabaseName("IX_Budget_User_DateRange");
         }
     }
 }

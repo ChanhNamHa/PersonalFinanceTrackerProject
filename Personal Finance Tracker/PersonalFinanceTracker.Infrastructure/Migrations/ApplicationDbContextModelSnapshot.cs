@@ -25,10 +25,11 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
@@ -47,18 +48,18 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("UserId", "StartDate", "EndDate");
+                    b.HasIndex("UserId", "StartDate", "EndDate")
+                        .HasDatabaseName("IX_Budget_User_DateRange");
 
                     b.ToTable("Budgets");
                 });
 
             modelBuilder.Entity("PersonalFinanceTracker.Domain.Entities.Category", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -77,31 +78,31 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = new Guid("a1b2c3d4-e5f6-4a1b-8c9d-0e1f2a3b4c5d"),
                             Name = "Lương hàng tháng",
                             Type = "Income"
                         },
                         new
                         {
-                            Id = 2,
+                            Id = new Guid("b2c3d4e5-f6a1-4b2c-9d0e-1f2a3b4c5d6e"),
                             Name = "Ăn uống & Nhà hàng",
                             Type = "Expense"
                         },
                         new
                         {
-                            Id = 3,
+                            Id = new Guid("c3d4e5f6-a1b2-4c3d-0e1f-2a3b4c5d6e7f"),
                             Name = "Di chuyển & Xăng xe",
                             Type = "Expense"
                         },
                         new
                         {
-                            Id = 4,
+                            Id = new Guid("d4e5f6a1-b2c3-4d4e-1f2a-3b4c5d6e7f8a"),
                             Name = "Tiền thưởng Freelance",
                             Type = "Income"
                         },
                         new
                         {
-                            Id = 5,
+                            Id = new Guid("e5f6a1b2-c3d4-4e5f-2a3b-4c5d6e7f8a9b"),
                             Name = "Hóa đơn Điện & Nước",
                             Type = "Expense"
                         });
@@ -111,14 +112,15 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
 
                     b.Property<decimal>("Amount")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -139,9 +141,13 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("TransactionDate");
+                    b.HasIndex("TransactionDate")
+                        .HasDatabaseName("IX_Transaction_Date");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("IX_Transaction_UserId");
+
+                    b.HasIndex("UserId", "TransactionDate");
 
                     b.ToTable("Transactions");
                 });
@@ -150,7 +156,8 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -178,13 +185,16 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
+                    b.HasIndex("Username")
+                        .IsUnique();
+
                     b.ToTable("Users");
                 });
 
             modelBuilder.Entity("PersonalFinanceTracker.Domain.Entities.Budget", b =>
                 {
                     b.HasOne("PersonalFinanceTracker.Domain.Entities.Category", "Category")
-                        .WithMany()
+                        .WithMany("Budgets")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -203,7 +213,7 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
             modelBuilder.Entity("PersonalFinanceTracker.Domain.Entities.Transaction", b =>
                 {
                     b.HasOne("PersonalFinanceTracker.Domain.Entities.Category", "Category")
-                        .WithMany()
+                        .WithMany("Transactions")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -217,6 +227,13 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PersonalFinanceTracker.Domain.Entities.Category", b =>
+                {
+                    b.Navigation("Budgets");
+
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("PersonalFinanceTracker.Domain.Entities.User", b =>

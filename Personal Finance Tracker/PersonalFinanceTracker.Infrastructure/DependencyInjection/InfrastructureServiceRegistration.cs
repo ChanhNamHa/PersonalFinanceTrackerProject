@@ -20,9 +20,15 @@ namespace PersonalFinanceTracker.Infrastructure
 
             //Service
             services.AddScoped<IAuthService, AuthService>();
+            //services.AddScoped<ITransactionService, TransactionService>();
+            //services.AddScoped<IAuthService, AuthService>();
+            //services.AddScoped<IAuthService, AuthService>();
 
             //Repository
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<IBudgetRepository, BudgetRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
 
             return services;
         }

@@ -5,16 +5,7 @@ using System.Text;
 using PersonalFinanceTracker.Infrastructure;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-// 1. Database Context
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseSqlServer(connectionString));
-
-// 2. Đăng ký AuthService (QUAN TRỌNG)
-//builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddInfrastructureServices(builder.Configuration);
-
-// 3. Cấu hình JWT Authentication
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -37,7 +28,8 @@ builder.Services.AddEndpointsApiExplorer(); // Cần thiết cho Swagger
 builder.Services.AddSwaggerGen(); // Bạn nên dùng Swagger thay vì OpenApi thuần để dễ test JWT
 
 var app = builder.Build();
-
+app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<RequestLoggingMiddleware>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -47,7 +39,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// 4. Thứ tự Middleware (CỰC KỲ QUAN TRỌNG)
 app.UseAuthentication(); // Phải đứng TRƯỚC UseAuthorization
 app.UseAuthorization();
 

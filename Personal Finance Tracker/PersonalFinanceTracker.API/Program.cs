@@ -1,9 +1,21 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using PersonalFinanceTracker.Application.Interfaces;
+using PersonalFinanceTracker.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
+// 1. Database Context
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+// 2. Đăng ký AuthService (QUAN TRỌNG)
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+// 3. Cấu hình JWT Authentication
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -13,28 +25,32 @@ builder.Services.AddAuthentication(options => {
     {
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidateLifetime = true, // Quan trọng để Refresh Token hoạt động
+        ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-        ClockSkew = TimeSpan.Zero // Loại bỏ thời gian trễ mặc định 5p
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "Key_Mac_Dinh_Sieu_Dai_Neu_Quen_Config")),
+        ClockSkew = TimeSpan.Zero
     };
 });
+
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer(); // Cần thiết cho Swagger
+builder.Services.AddSwaggerGen(); // Bạn nên dùng Swagger thay vì OpenApi thuần để dễ test JWT
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
 
+// 4. Thứ tự Middleware (CỰC KỲ QUAN TRỌNG)
+app.UseAuthentication(); // Phải đứng TRƯỚC UseAuthorization
 app.UseAuthorization();
 
 app.MapControllers();

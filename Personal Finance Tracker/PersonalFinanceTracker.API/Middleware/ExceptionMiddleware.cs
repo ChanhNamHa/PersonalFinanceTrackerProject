@@ -37,10 +37,8 @@ public class ExceptionMiddleware
         var statusCode = (int)HttpStatusCode.InternalServerError;
         var message = "Đã có lỗi hệ thống xảy ra. Vui lòng thử lại sau.";
 
-        // Tùy biến mã lỗi dựa trên loại Exception (Nghiệp vụ)
         if (exception is UnauthorizedAccessException) statusCode = (int)HttpStatusCode.Unauthorized;
         else if (exception is KeyNotFoundException) statusCode = (int)HttpStatusCode.NotFound;
-        // Bạn có thể thêm các Custom Exception của riêng mình ở đây
 
         context.Response.StatusCode = statusCode;
 
@@ -48,7 +46,6 @@ public class ExceptionMiddleware
         {
             StatusCode = statusCode,
             Message = exception.Message,
-            // Chỉ hiện chi tiết lỗi nếu đang code (Development)
             Details = _env.IsDevelopment() ? exception.StackTrace?.ToString() : null
         };
 

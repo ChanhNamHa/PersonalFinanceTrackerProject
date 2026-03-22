@@ -8,7 +8,7 @@ namespace PersonalFinanceTracker.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            // 1. Khóa chính - Sử dụng Sequential GUID để tối ưu Insert
+            // 1. Khóa chính
             builder.HasKey(u => u.Id);
             builder.Property(u => u.Id)
                 .HasDefaultValueSql("NEWSEQUENTIALID()");
@@ -22,7 +22,7 @@ namespace PersonalFinanceTracker.Infrastructure.Configurations
                 .HasMaxLength(150)
                 .IsRequired();
 
-            // Tạo Index Unique cho Email (Rất quan trọng để tránh trùng lặp tài khoản)
+            // Tạo Index Unique cho Email
             builder.HasIndex(u => u.Email).IsUnique();
 
             builder.Property(u => u.PasswordHash)
@@ -37,7 +37,7 @@ namespace PersonalFinanceTracker.Infrastructure.Configurations
                 .HasColumnType("datetime2")
                 .IsRequired(false);
 
-            // 4. Quan hệ (Đã tường minh qua Transaction/Budget)
+            // 4. Quan hệ
             // Cascade Delete: Khi xóa User, các Giao dịch và Ngân sách của họ sẽ bị xóa theo
             builder.HasMany(u => u.Transactions)
                 .WithOne(t => t.User)

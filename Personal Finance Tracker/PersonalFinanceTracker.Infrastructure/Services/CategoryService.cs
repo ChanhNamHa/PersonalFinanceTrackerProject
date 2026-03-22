@@ -19,7 +19,7 @@ public class CategoryService : ICategoryService
 
     public async Task<CategoryResponse?> GetCategoryByIdAsync(string id)
     {
-        var category = await _uow.Categories.GetByIdAsync(Guid.Parse(id)); // Sử dụng object id trong Generic Repo
+        var category = await _uow.Categories.GetByIdAsync(Guid.Parse(id));
         if (category == null) return null;
 
         return new CategoryResponse(category.Id.ToString(), category.Name, category.Type);
@@ -27,12 +27,10 @@ public class CategoryService : ICategoryService
 
     public async Task<CategoryResponse> CreateCategoryAsync(CreateCategoryRequest request)
     {
-        // Logic kiểm tra trùng tên...
         var category = new Category
         {
             Name = request.Name,
             Type = request.Type
-            // Id tự tăng nên không set ở đây
         };
 
         await _uow.Categories.AddAsync(category);

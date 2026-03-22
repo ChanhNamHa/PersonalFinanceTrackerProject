@@ -22,7 +22,7 @@ namespace PersonalFinanceTracker.Infrastructure.Configurations
             // 3. Ghi chú
             builder.Property(t => t.Note)
                 .HasMaxLength(500)
-                .IsRequired(false); // Cho phép Null như trong sơ đồ (Allow Nulls check)
+                .IsRequired(false);
 
             // 4. Thời gian giao dịch
             builder.Property(t => t.TransactionDate)

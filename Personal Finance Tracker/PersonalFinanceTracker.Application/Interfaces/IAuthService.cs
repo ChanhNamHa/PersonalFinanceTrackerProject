@@ -1,12 +1,16 @@
-﻿using PersonalFinanceTracker.Domain.Entities;
+﻿using PersonalFinanceTracker.Application.DTOs;
+using PersonalFinanceTracker.Domain.Entities;
 
 namespace PersonalFinanceTracker.Application.Interfaces
 {
     public interface IAuthService
     {
-        string HashPassword(string password);
-        bool VerifyPassword(string password, string hashedPassword);
-        string GenerateAccessToken(User user);
-        string GenerateRefreshToken();
+        public string HashPassword(string password);
+        public bool VerifyPassword(string password, string hashedPassword);
+        public string GenerateAccessToken(User user);
+        public string GenerateRefreshToken();
+
+        public Task<string> RegisterAsync(RegisterRequest request);
+        public Task<AuthResponse> LoginAsync(LoginRequest request);
     }
 }

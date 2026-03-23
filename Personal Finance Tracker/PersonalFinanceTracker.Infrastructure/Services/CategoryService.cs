@@ -11,22 +11,19 @@ public class CategoryService : ICategoryService
         _uow = uow;
     }
 
-    public async Task<IEnumerable<CategoryResponse>> GetAllCategoriesAsync()
+    public async Task<IEnumerable<CategoryResponse>> GetAllAsync()
     {
+        // Lấy tất cả danh mục cho mọi người dùng
         var categories = await _uow.Categories.GetAllAsync();
-        return categories.Select(c => new CategoryResponse(c.Id.ToString(), c.Name, c.Type));
+        return categories.Select(c => new CategoryResponse(c.Id, c.Name, c.Type));
     }
 
-    public async Task<CategoryResponse?> GetCategoryByIdAsync(string id)
+    // Hàm tạo danh mục (Thường chỉ dành cho Admin hoặc dùng để Seed Data)
+    public async Task<CategoryResponse> CreateAsync(CreateCategoryRequest request)
     {
-        var category = await _uow.Categories.GetByIdAsync(Guid.Parse(id));
-        if (category == null) return null;
+        var existing = await _uow.Categories.GetByNameAsync(request.Name);
+        if (existing != null) throw new InvalidOperationException("Danh mục này đã tồn tại trong hệ thống.");
 
-        return new CategoryResponse(category.Id.ToString(), category.Name, category.Type);
-    }
-
-    public async Task<CategoryResponse> CreateCategoryAsync(CreateCategoryRequest request)
-    {
         var category = new Category
         {
             Name = request.Name,
@@ -36,27 +33,6 @@ public class CategoryService : ICategoryService
         await _uow.Categories.AddAsync(category);
         await _uow.CompleteAsync();
 
-        return new CategoryResponse(category.Id.ToString(), category.Name, category.Type);
-    }
-
-    public async Task<bool> DeleteCategoryAsync(string id)
-    {
-        var category = await _uow.Categories.GetByIdAsync(Guid.Parse(id));
-        if (category == null) return false;
-
-        _uow.Categories.Delete(category);
-        return await _uow.CompleteAsync() > 0;
-    }
-
-    public async Task<bool> UpdateCategoryAsync(string id, CreateCategoryRequest request)
-    {
-        var category = await _uow.Categories.GetByIdAsync(Guid.Parse(id));
-        if (category == null) return false;
-
-        category.Name = request.Name;
-        category.Type = request.Type;
-
-        _uow.Categories.Update(category);
-        return await _uow.CompleteAsync() > 0;
+        return new CategoryResponse(category.Id, category.Name, category.Type);
     }
 }

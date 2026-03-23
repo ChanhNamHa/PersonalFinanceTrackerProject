@@ -1,17 +1,11 @@
 ﻿using PersonalFinanceTracker.Application.DTOs;
+using PersonalFinanceTracker.Application.Interfaces;
+using PersonalFinanceTracker.Domain.Entities;
 
-namespace PersonalFinanceTracker.Application.Interfaces
+public interface  ICategoryService
 {
-    public interface ICategoryService
-    {
-        Task<IEnumerable<CategoryResponse>> GetAllCategoriesAsync();
+    Task<IEnumerable<CategoryResponse>> GetAllAsync();
 
-        Task<CategoryResponse?> GetCategoryByIdAsync(string id);
+    Task<CategoryResponse> CreateAsync(CreateCategoryRequest request);
 
-        Task<CategoryResponse> CreateCategoryAsync(CreateCategoryRequest request);
-
-        Task<bool> DeleteCategoryAsync(string id);
-
-        Task<bool> UpdateCategoryAsync(string id, CreateCategoryRequest request);
-    }
 }

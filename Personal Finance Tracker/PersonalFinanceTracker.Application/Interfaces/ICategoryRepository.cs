@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using PersonalFinanceTracker.Application.Interfaces;
+using PersonalFinanceTracker.Domain.Entities;
 
-namespace PersonalFinanceTracker.Application.Interfaces
+public interface ICategoryRepository : IGenericRepository<Category>
 {
-    public interface ICategoryRepository
-    {
-    }
+    // Lấy danh mục theo tên (không phân biệt User)
+    Task<Category?> GetByNameAsync(string name);
+
+    // Lấy danh sách danh mục theo Type (Expense/Income)
+    Task<IEnumerable<Category>> GetByTypeAsync(string type);
+
 }

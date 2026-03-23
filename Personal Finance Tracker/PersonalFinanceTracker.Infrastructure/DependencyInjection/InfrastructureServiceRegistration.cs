@@ -12,17 +12,16 @@ namespace PersonalFinanceTracker.Infrastructure
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
             //DbContext
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
             //Unit of Work
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             //Service
             services.AddScoped<IAuthService, AuthService>();
-            //services.AddScoped<ITransactionService, TransactionService>();
-            //services.AddScoped<IAuthService, AuthService>();
-            //services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ITransactionService, TransactionService>();
+            services.AddScoped<IBudgetRepository, BudgetRepository>();
+            services.AddScoped<ICategoryService, CategoryService>();
 
             //Repository
             services.AddScoped<IUserRepository, UserRepository>();

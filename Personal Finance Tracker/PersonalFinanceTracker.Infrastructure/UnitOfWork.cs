@@ -8,17 +8,17 @@ namespace PersonalFinanceTracker.Infrastructure.Repositories
         private readonly ApplicationDbContext _context;
 
         public IUserRepository Users { get; private set; }
-        public IGenericRepository<Transaction> Transactions { get; private set; }
-        public IGenericRepository<Category> Categories { get; private set; }
-        public IGenericRepository<Budget> Budgets { get; private set; }
+        public ITransactionRepository Transactions { get; private set; }
+        public ICategoryRepository Categories { get; private set; }
+        public IBudgetRepository Budgets { get; private set; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
             Users = new UserRepository(_context);
-            Transactions = new GenericRepository<Transaction>(_context);
-            Categories = new GenericRepository<Category>(_context);
-            Budgets = new GenericRepository<Budget>(_context);
+            Transactions = new TransactionRepository(_context);
+            Categories = new CategoryRepository(_context);
+            Budgets = new BudgetRepository(_context);
         }
 
         public async Task<int> CompleteAsync() => await _context.SaveChangesAsync();

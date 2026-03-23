@@ -1,10 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using PersonalFinanceTracker.Application.Interfaces;
+using PersonalFinanceTracker.Domain.Entities;
 
-namespace PersonalFinanceTracker.Application.Interfaces
+public interface ITransactionRepository : IGenericRepository<Transaction>
 {
-    public interface ITransactionRepository
-    {
-    }
+    // Lấy chi tiết 1 giao dịch kèm Category
+    Task<Transaction?> GetTransactionByIdAsync(Guid id);
+
+    // Lấy danh sách giao dịch của User kèm Category
+    Task<IEnumerable<Transaction>> GetTransactionsWithCategoryAsync(Guid userId);
+
+    // Tính tổng chi tiêu
+    Task<decimal> GetTotalSpentAsync(Guid userId, Guid categoryId, DateTime startDate, DateTime endDate);
 }

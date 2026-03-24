@@ -1,5 +1,6 @@
 ﻿using PersonalFinanceTracker.Application.DTOs;
 using PersonalFinanceTracker.Application.Interfaces;
+using PersonalFinanceTracker.Domain.Common;
 using PersonalFinanceTracker.Domain.Entities;
 
 namespace PersonalFinanceTracker.Infrastructure.Services
@@ -15,16 +16,18 @@ namespace PersonalFinanceTracker.Infrastructure.Services
 
         public async Task<BudgetResponse> CreateBudgetAsync(Guid userId, CreateBudgetRequest request)
         {
-            // 1. Validation logic ngày tháng
+            //Validation logic ngày tháng
             if (request.EndDate <= request.StartDate)
                 throw new ArgumentException("Ngày kết thúc phải lớn hơn ngày bắt đầu.");
 
-            // 2. Kiểm tra trùng lặp Budget (Mỗi User chỉ có 1 Budget cho 1 Category trong cùng 1 khoảng thời gian)
+            //Kiểm tra trùng lặp Budget (Mỗi User chỉ có 1 Budget cho 1 Category trong cùng 1 khoảng thời gian)
             var isOverlapping = await _uow.Budgets.IsOverlappingAsync(userId, request.CategoryId, request.StartDate, request.EndDate);
             if (isOverlapping)
                 throw new InvalidOperationException("Đã tồn tại ngân sách cho danh mục này trong khoảng thời gian đã chọn.");
-
-            // 3. Khởi tạo Entity
+            var category = await _uow.Categories.GetByIdAsync(request.CategoryId);
+            if (category.Type == CategoryTypes.Income) 
+                throw new InvalidOperationException("Không thể tạo ngân sách cho danh mục thu nhập.");
+            //Khởi tạo Entity
             var budget = new Budget
             {
                 LimitAmount = request.LimitAmount,

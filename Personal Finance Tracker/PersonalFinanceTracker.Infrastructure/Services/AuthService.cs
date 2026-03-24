@@ -87,7 +87,7 @@ namespace PersonalFinanceTracker.Infrastructure.Services
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(15),
+                expires: DateTime.Now.AddMinutes(3000),
                 signingCredentials: creds
             );
 

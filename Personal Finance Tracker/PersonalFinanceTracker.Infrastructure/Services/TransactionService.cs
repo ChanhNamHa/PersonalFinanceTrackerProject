@@ -1,7 +1,7 @@
 ﻿using PersonalFinanceTracker.Application.DTOs;
 using PersonalFinanceTracker.Application.Interfaces;
 using PersonalFinanceTracker.Domain.Entities;
-
+using PersonalFinanceTracker.Application.Exceptions;
 public class TransactionService : ITransactionService
 {
     private readonly IUnitOfWork _uow;
@@ -117,8 +117,11 @@ public class TransactionService : ITransactionService
             if (totalSpent + newAmount > budget.LimitAmount)
             {
                 //có thể tích hợp bắn Notification hoặc SignalR
-                Console.WriteLine($"Cảnh báo: Bạn đã tiêu vượt định mức {budget.LimitAmount} cho danh mục này!");
+                throw new BudgetExceededException(
+                $"Giao dịch thất bại! Hạn mức còn lại: {budget.LimitAmount - totalSpent:N0}đ. " +
+                $"Số tiền này vượt định mức {(totalSpent + newAmount) - budget.LimitAmount}đ. Vui lòng nâng hạn mức ngân sách trước khi tiếp tục.");
             }
+            
         }
     }
 }

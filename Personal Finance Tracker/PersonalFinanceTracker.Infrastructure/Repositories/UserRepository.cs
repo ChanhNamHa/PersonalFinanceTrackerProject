@@ -12,7 +12,6 @@ namespace PersonalFinanceTracker.Infrastructure.Repositories
 
         public async Task<User?> GetByEmailAsync(string email)
         {
-            // Truy vấn trực tiếp vào Database để tìm Email
             return await _dbSet.FirstOrDefaultAsync(u => u.Email == email);
         }
     }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using PersonalFinanceTracker.Application.Exceptions;
 using System.Net;
 
 public class ExceptionMiddleware
@@ -38,6 +39,11 @@ public class ExceptionMiddleware
         var message = "Đã có lỗi hệ thống xảy ra. Vui lòng thử lại sau.";
 
         if (exception is UnauthorizedAccessException) statusCode = (int)HttpStatusCode.Unauthorized;
+        else if (exception is BudgetExceededException)
+        {
+            statusCode = (int)HttpStatusCode.BadRequest; // 400
+            message = exception.Message;
+        }
         else if (exception is KeyNotFoundException) statusCode = (int)HttpStatusCode.NotFound;
 
         context.Response.StatusCode = statusCode;

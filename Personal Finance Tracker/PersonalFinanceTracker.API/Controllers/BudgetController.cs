@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PersonalFinanceTracker.Application.DTOs;
 using PersonalFinanceTracker.Application.Interfaces;
-using PersonalFinanceTracker.Domain.Entities;
 
 namespace PersonalFinanceTracker.API.Controllers
 {

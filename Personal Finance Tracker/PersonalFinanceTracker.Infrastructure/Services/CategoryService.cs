@@ -22,7 +22,7 @@ public class CategoryService : ICategoryService
     public async Task<CategoryResponse> CreateAsync(CreateCategoryRequest request)
     {
         var existing = await _uow.Categories.GetByNameAsync(request.Name);
-        if (existing != null) throw new InvalidOperationException("Danh mục này đã tồn tại trong hệ thống.");
+        if (existing != null) throw new PersonalFinanceTracker.Application.Exceptions.ConflictException("Danh mục này đã tồn tại trong hệ thống.");
 
         var category = new Category
         {

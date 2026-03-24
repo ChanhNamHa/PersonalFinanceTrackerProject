@@ -9,6 +9,7 @@ namespace PersonalFinanceTracker.Application.Interfaces
         public bool VerifyPassword(string password, string hashedPassword);
         public string GenerateAccessToken(User user);
         public string GenerateRefreshToken();
+        public string HashRefreshToken(string refreshToken);
 
         public Task<string> RegisterAsync(RegisterRequest request);
         public Task<AuthResponse> LoginAsync(LoginRequest request);

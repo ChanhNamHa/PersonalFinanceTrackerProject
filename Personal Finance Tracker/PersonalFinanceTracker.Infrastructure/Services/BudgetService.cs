@@ -18,15 +18,15 @@ namespace PersonalFinanceTracker.Infrastructure.Services
         {
             //Validation logic ngày tháng
             if (request.EndDate <= request.StartDate)
-                throw new ArgumentException("Ngày kết thúc phải lớn hơn ngày bắt đầu.");
+                throw new PersonalFinanceTracker.Application.Exceptions.BadRequestException("Ngày kết thúc phải lớn hơn ngày bắt đầu.");
 
             //Kiểm tra trùng lặp Budget (Mỗi User chỉ có 1 Budget cho 1 Category trong cùng 1 khoảng thời gian)
             var isOverlapping = await _uow.Budgets.IsOverlappingAsync(userId, request.CategoryId, request.StartDate, request.EndDate);
             if (isOverlapping)
-                throw new InvalidOperationException("Đã tồn tại ngân sách cho danh mục này trong khoảng thời gian đã chọn.");
+                throw new PersonalFinanceTracker.Application.Exceptions.ConflictException("Đã tồn tại ngân sách cho danh mục này trong khoảng thời gian đã chọn.");
             var category = await _uow.Categories.GetByIdAsync(request.CategoryId);
             if (category.Type == CategoryTypes.Income) 
-                throw new InvalidOperationException("Không thể tạo ngân sách cho danh mục thu nhập.");
+                throw new PersonalFinanceTracker.Application.Exceptions.BadRequestException("Không thể tạo ngân sách cho danh mục thu nhập.");
             //Khởi tạo Entity
             var budget = new Budget
             {

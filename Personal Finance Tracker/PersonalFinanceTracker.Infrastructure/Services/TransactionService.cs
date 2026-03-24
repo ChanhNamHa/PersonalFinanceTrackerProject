@@ -15,7 +15,7 @@ public class TransactionService : ITransactionService
         var transaction = await _uow.Transactions.GetByIdAsync(transactionId);
 
         if (transaction == null || transaction.UserId != userId)
-            throw new KeyNotFoundException("Giao dịch không tồn tại.");
+            throw new PersonalFinanceTracker.Application.Exceptions.NotFoundException("Giao dịch không tồn tại.");
 
         // Logic: Nếu đổi số tiền hoặc đổi Category, phải check lại Budget mới
         if (transaction.Amount != request.Amount || transaction.CategoryId != request.CategoryId)
@@ -36,7 +36,7 @@ public class TransactionService : ITransactionService
     {
         // 1. Kiểm tra Category có tồn tại không
         var category = await _uow.Categories.GetByIdAsync(request.CategoryId);
-        if (category == null) throw new KeyNotFoundException("Danh mục không tồn tại.");
+        if (category == null) throw new PersonalFinanceTracker.Application.Exceptions.NotFoundException("Danh mục không tồn tại.");
 
         // 2. Kiểm tra ngân sách (Budget Alert)
         await CheckBudgetAlert(userId, request.CategoryId, request.Amount);

@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PersonalFinanceTracker.Application.DTOs;
 using PersonalFinanceTracker.Application.Interfaces;
+using PersonalFinanceTracker.Application.Settings;
 using PersonalFinanceTracker.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -12,12 +14,12 @@ namespace PersonalFinanceTracker.Infrastructure.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly IConfiguration _config;
+        private readonly JwtOptions _jwtOptions;
         private readonly IUnitOfWork _uow;
 
-        public AuthService(IConfiguration config, IUnitOfWork uow)
+        public AuthService(IOptions<JwtOptions> jwtOptions, IUnitOfWork uow)
         {
-            _config = config;
+            _jwtOptions = jwtOptions?.Value ?? throw new ArgumentNullException(nameof(jwtOptions));
             _uow = uow;
         }
 
@@ -54,10 +56,20 @@ namespace PersonalFinanceTracker.Infrastructure.Services
             var accessToken = GenerateAccessToken(user);
             var refreshToken = GenerateRefreshToken();
 
-            // Cập nhật Refresh Token vào User Entity
-            user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            // Hash refresh token before storing
+            var refreshTokenHash = HashRefreshToken(refreshToken);
 
+            var refreshTokenEntity = new UserRefreshToken
+            {
+                Id = Guid.NewGuid(),
+                UserId = user.Id,
+                TokenHash = refreshTokenHash,
+                ExpiresAt = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpirationDays),
+                CreatedAt = DateTime.UtcNow,
+                DeviceInfo = null
+            };
+
+            await _uow.RefreshTokens.AddAsync(refreshTokenEntity);
             await _uow.CompleteAsync();
 
             return new AuthResponse(accessToken, refreshToken, user.Username);
@@ -71,23 +83,35 @@ namespace PersonalFinanceTracker.Infrastructure.Services
         public bool VerifyPassword(string password, string hashedPassword)
             => BCrypt.Net.BCrypt.Verify(password, hashedPassword);
 
+        public string HashRefreshToken(string refreshToken)
+        {
+            using var sha = System.Security.Cryptography.SHA256.Create();
+            var bytes = Encoding.UTF8.GetBytes(refreshToken);
+            var hash = sha.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
+        }
+
         public string GenerateAccessToken(User user)
         {
+            if (string.IsNullOrEmpty(_jwtOptions.Key))
+                throw new InvalidOperationException("JWT Key is missing in configuration.");
+
             var claims = new[] {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, user.Username)
             };
 
-            var jwtKey = _config["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key is missing in config");
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+            var expires = DateTime.UtcNow.AddMinutes(Math.Max(1, _jwtOptions.AccessTokenExpirationMinutes));
+
             var token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"],
+                issuer: _jwtOptions.Issuer,
+                audience: _jwtOptions.Audience,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(3000),
+                expires: expires,
                 signingCredentials: creds
             );
 

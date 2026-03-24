@@ -38,13 +38,14 @@ public class ExceptionMiddleware
         var statusCode = (int)HttpStatusCode.InternalServerError;
         var message = "Đã có lỗi hệ thống xảy ra. Vui lòng thử lại sau.";
 
-        if (exception is UnauthorizedAccessException) statusCode = (int)HttpStatusCode.Unauthorized;
-        else if (exception is BudgetExceededException)
+        if (exception is PersonalFinanceTracker.Application.Exceptions.AuthenticationException) statusCode = (int)HttpStatusCode.Unauthorized;
+        else if (exception is ConflictException) statusCode = (int)HttpStatusCode.Conflict;
+        else if (exception is PersonalFinanceTracker.Application.Exceptions.BudgetExceededException)
         {
             statusCode = (int)HttpStatusCode.BadRequest; // 400
             message = exception.Message;
         }
-        else if (exception is KeyNotFoundException) statusCode = (int)HttpStatusCode.NotFound;
+        else if (exception is PersonalFinanceTracker.Application.Exceptions.NotFoundException) statusCode = (int)HttpStatusCode.NotFound;
 
         context.Response.StatusCode = statusCode;
 

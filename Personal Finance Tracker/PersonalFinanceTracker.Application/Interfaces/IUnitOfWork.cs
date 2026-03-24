@@ -5,6 +5,7 @@ namespace PersonalFinanceTracker.Application.Interfaces
     public interface IUnitOfWork : IDisposable
     {
         IUserRepository Users { get; }
+        IRefreshTokenRepository RefreshTokens { get; }
         ITransactionRepository Transactions { get; }
         ICategoryRepository Categories { get; }
         IBudgetRepository Budgets { get; }

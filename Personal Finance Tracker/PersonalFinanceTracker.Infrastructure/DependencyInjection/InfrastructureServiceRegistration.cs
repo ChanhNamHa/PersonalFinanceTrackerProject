@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using PersonalFinanceTracker.Application.Interfaces;
 using PersonalFinanceTracker.Infrastructure.Repositories;
 using PersonalFinanceTracker.Infrastructure.Services;
+using PersonalFinanceTracker.Application.Settings;
 
 namespace PersonalFinanceTracker.Infrastructure
 {
@@ -14,14 +15,19 @@ namespace PersonalFinanceTracker.Infrastructure
             //DbContext
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
+            // Bind JwtOptions
+            services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
+
             //Unit of Work
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             //Service
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IRefreshTokenService, RefreshTokenService>();
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<IBudgetRepository, BudgetRepository>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
             //Repository
             services.AddScoped<IUserRepository, UserRepository>();

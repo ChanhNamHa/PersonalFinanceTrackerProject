@@ -31,4 +31,9 @@ namespace PersonalFinanceTracker.Application.DTOs
     );
 
     public record AuthResponse(string AccessToken, string RefreshToken, string Username);
+
+    public record RefreshRequest(
+        [Required(ErrorMessage = "Refresh token is required")]
+        string RefreshToken
+    );
 }

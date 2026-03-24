@@ -28,15 +28,6 @@ namespace PersonalFinanceTracker.Infrastructure.Configurations
             builder.Property(u => u.PasswordHash)
                 .IsRequired();
 
-            // 3. Cấu hình Refresh Token
-            builder.Property(u => u.RefreshToken)
-                .HasMaxLength(500)
-                .IsRequired(false); // Cho phép Null ban đầu
-
-            builder.Property(u => u.RefreshTokenExpiryTime)
-                .HasColumnType("datetime2")
-                .IsRequired(false);
-
             // 4. Quan hệ
             // Cascade Delete: Khi xóa User, các Giao dịch và Ngân sách của họ sẽ bị xóa theo
             builder.HasMany(u => u.Transactions)
@@ -48,6 +39,8 @@ namespace PersonalFinanceTracker.Infrastructure.Configurations
                 .WithOne(b => b.User)
                 .HasForeignKey(b => b.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Relation for Refresh Tokens is configured in UserRefreshTokenConfiguration
         }
     }
 }

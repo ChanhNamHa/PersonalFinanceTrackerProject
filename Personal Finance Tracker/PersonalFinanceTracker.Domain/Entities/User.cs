@@ -12,9 +12,8 @@ namespace PersonalFinanceTracker.Domain.Entities
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
 
-        // Refresh Token fields
-        public string? RefreshToken { get; set; }
-        public DateTime? RefreshTokenExpiryTime { get; set; }
+        // Refresh Tokens (multiple sessions/devices)
+        public ICollection<UserRefreshToken> RefreshTokens { get; set; } = new List<UserRefreshToken>();
 
         // Navigation properties
         public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();

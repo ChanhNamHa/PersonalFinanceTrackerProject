@@ -11,6 +11,7 @@ namespace PersonalFinanceTracker.Infrastructure.Repositories
         public ITransactionRepository Transactions { get; private set; }
         public ICategoryRepository Categories { get; private set; }
         public IBudgetRepository Budgets { get; private set; }
+        public IRefreshTokenRepository RefreshTokens { get; private set; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -19,6 +20,7 @@ namespace PersonalFinanceTracker.Infrastructure.Repositories
             Transactions = new TransactionRepository(_context);
             Categories = new CategoryRepository(_context);
             Budgets = new BudgetRepository(_context);
+            RefreshTokens = new RefreshTokenRepository(_context);
         }
 
         public async Task<int> CompleteAsync() => await _context.SaveChangesAsync();

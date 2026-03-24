@@ -2,6 +2,3 @@
 [Bb]in/
 [Oo]bj/
 *.user
-# Local settings
-appsettings.json
-appsettings.Development.json

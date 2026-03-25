@@ -7,7 +7,7 @@ using PersonalFinanceTracker.Application.DTOs;
 using PersonalFinanceTracker.Application.Interfaces;
 using Xunit;
 
-namespace PersonalFinanceTracker.Tests.UnitTests.ControllerTests
+namespace PersonalFinanceTracker.Tests.UnitTests.Controllers
 {
     public class AuthControllerTests
     {

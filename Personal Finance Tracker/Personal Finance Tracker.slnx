@@ -6,4 +6,5 @@
   <Project Path="PersonalFinanceTracker.Application/PersonalFinanceTracker.Application.csproj" />
   <Project Path="PersonalFinanceTracker.Domain/PersonalFinanceTracker.Domain.csproj" />
   <Project Path="PersonalFinanceTracker.Infrastructure/PersonalFinanceTracker.Infrastructure.csproj" />
+  <Project Path="PersonalFinanceTracker.Test/PersonalFinanceTracker.Tests.csproj" Id="a5ea5a8c-1dba-48be-a9b3-f33fa774bb87" />
 </Solution>

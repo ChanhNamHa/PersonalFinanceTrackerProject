@@ -7,7 +7,6 @@ using PersonalFinanceTracker.Application.DTOs;
 using PersonalFinanceTracker.Application.Interfaces;
 using PersonalFinanceTracker.Application.Settings;
 using PersonalFinanceTracker.Domain.Entities;
-using PersonalFinanceTracker.Infrastructure.Services;
 using Xunit;
 
 namespace PersonalFinanceTracker.Tests.UnitTests.Services

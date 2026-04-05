@@ -3,7 +3,7 @@ using PersonalFinanceTracker.Application.Interfaces;
 using PersonalFinanceTracker.Domain.Common;
 using PersonalFinanceTracker.Domain.Entities;
 
-namespace PersonalFinanceTracker.Infrastructure.Services
+namespace PersonalFinanceTracker.Application.Services
 {
     public class BudgetService : IBudgetService
     {
@@ -25,7 +25,7 @@ namespace PersonalFinanceTracker.Infrastructure.Services
             if (isOverlapping)
                 throw new PersonalFinanceTracker.Application.Exceptions.ConflictException("Đã tồn tại ngân sách cho danh mục này trong khoảng thời gian đã chọn.");
             var category = await _uow.Categories.GetByIdAsync(request.CategoryId);
-            if (category.Type == CategoryTypes.Income) 
+            if (category?.Type == CategoryTypes.Income) 
                 throw new PersonalFinanceTracker.Application.Exceptions.BadRequestException("Không thể tạo ngân sách cho danh mục thu nhập.");
             //Khởi tạo Entity
             var budget = new Budget

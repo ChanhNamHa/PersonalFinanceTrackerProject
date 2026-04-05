@@ -8,7 +8,7 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace PersonalFinanceTracker.Infrastructure.Services
+namespace PersonalFinanceTracker.Application.Services
 {
     public class RefreshTokenService : IRefreshTokenService
     {

@@ -2,8 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using PersonalFinanceTracker.Application.Interfaces;
+using PersonalFinanceTracker.Application.Services;
 using PersonalFinanceTracker.Infrastructure.Repositories;
-using PersonalFinanceTracker.Infrastructure.Services;
 using PersonalFinanceTracker.Application.Settings;
 
 namespace PersonalFinanceTracker.Infrastructure

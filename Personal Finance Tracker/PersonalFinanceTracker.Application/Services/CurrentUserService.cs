@@ -2,7 +2,7 @@ using PersonalFinanceTracker.Application.Interfaces;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 
-namespace PersonalFinanceTracker.Infrastructure.Services
+namespace PersonalFinanceTracker.Application.Services
 {
     public class CurrentUserService : ICurrentUserService
     {
@@ -16,7 +16,11 @@ namespace PersonalFinanceTracker.Infrastructure.Services
         public string? GetUserId()
         {
             var user = _httpContextAccessor.HttpContext?.User;
-            return user?.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         }
+        private readonly IUnitOfWork _uow;
+
+
     }
 }

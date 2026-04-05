@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PersonalFinanceTracker.Application.DTOs;
 using PersonalFinanceTracker.Application.Interfaces;
@@ -10,7 +9,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace PersonalFinanceTracker.Infrastructure.Services
+namespace PersonalFinanceTracker.Application.Services
 {
     public class AuthService : IAuthService
     {

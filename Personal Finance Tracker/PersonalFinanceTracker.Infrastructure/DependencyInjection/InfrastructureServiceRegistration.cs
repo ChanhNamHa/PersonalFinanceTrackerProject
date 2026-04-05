@@ -29,6 +29,10 @@ namespace PersonalFinanceTracker.Infrastructure
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
+            // Current user
+            services.AddHttpContextAccessor();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
+
             //Repository
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();

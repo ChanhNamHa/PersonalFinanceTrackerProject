@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PersonalFinanceTracker.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialIdentityUpdate : Migration
+    public partial class AddAuditFields : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,7 +19,12 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
+                    Type = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -34,8 +39,11 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
                     Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RefreshToken = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -51,7 +59,12 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -78,9 +91,13 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
                     Amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     Note = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     TransactionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -99,16 +116,44 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "UserRefreshTokens",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TokenHash = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    ExpiresAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DeviceInfo = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    RevokedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ReplacedByTokenHash = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserRefreshTokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserRefreshTokens_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "Categories",
-                columns: new[] { "Id", "Name", "Type" },
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "IsDeleted", "Name", "Type", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { new Guid("a1b2c3d4-e5f6-4a1b-8c9d-0e1f2a3b4c5d"), "Lương hàng tháng", "Income" },
-                    { new Guid("b2c3d4e5-f6a1-4b2c-9d0e-1f2a3b4c5d6e"), "Ăn uống & Nhà hàng", "Expense" },
-                    { new Guid("c3d4e5f6-a1b2-4c3d-0e1f-2a3b4c5d6e7f"), "Di chuyển & Xăng xe", "Expense" },
-                    { new Guid("d4e5f6a1-b2c3-4d4e-1f2a-3b4c5d6e7f8a"), "Tiền thưởng Freelance", "Income" },
-                    { new Guid("e5f6a1b2-c3d4-4e5f-2a3b-4c5d6e7f8a9b"), "Hóa đơn Điện & Nước", "Expense" }
+                    { new Guid("a1b2c3d4-e5f6-4a1b-8c9d-0e1f2a3b4c5d"), new DateTime(2026, 4, 5, 12, 0, 0, 0, DateTimeKind.Utc), null, false, "Lương hàng tháng", "Income", null, null },
+                    { new Guid("b2c3d4e5-f6a1-4b2c-9d0e-1f2a3b4c5d6e"), new DateTime(2026, 4, 5, 12, 0, 0, 0, DateTimeKind.Utc), null, false, "Ăn uống & Nhà hàng", "Expense", null, null },
+                    { new Guid("c3d4e5f6-a1b2-4c3d-0e1f-2a3b4c5d6e7f"), new DateTime(2026, 4, 5, 12, 0, 0, 0, DateTimeKind.Utc), null, false, "Di chuyển & Xăng xe", "Expense", null, null },
+                    { new Guid("d4e5f6a1-b2c3-4d4e-1f2a-3b4c5d6e7f8a"), new DateTime(2026, 4, 5, 12, 0, 0, 0, DateTimeKind.Utc), null, false, "Tiền thưởng Freelance", "Income", null, null },
+                    { new Guid("e5f6a1b2-c3d4-4e5f-2a3b-4c5d6e7f8a9b"), new DateTime(2026, 4, 5, 12, 0, 0, 0, DateTimeKind.Utc), null, false, "Hóa đơn Điện & Nước", "Expense", null, null }
                 });
 
             migrationBuilder.CreateIndex(
@@ -142,6 +187,11 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
                 columns: new[] { "UserId", "TransactionDate" });
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserRefreshTokens_UserId",
+                table: "UserRefreshTokens",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",
                 table: "Users",
                 column: "Email",
@@ -162,6 +212,9 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Transactions");
+
+            migrationBuilder.DropTable(
+                name: "UserRefreshTokens");
 
             migrationBuilder.DropTable(
                 name: "Categories");

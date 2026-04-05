@@ -1,11 +1,13 @@
-﻿namespace PersonalFinanceTracker.Application.Interfaces
+﻿using PersonalFinanceTracker.Domain.Common;
+
+namespace PersonalFinanceTracker.Application.Interfaces
 {
-    public interface IGenericRepository<T> where T : class
+    public interface IGenericRepository<Entity> where Entity : BaseEntity
     {
-        Task<T?> GetByIdAsync(Guid id);
-        Task<IEnumerable<T>> GetAllAsync();
-        Task AddAsync(T entity);
-        void Update(T entity);
-        void Delete(T entity);
+        Task<Entity?> GetByIdAsync(Guid id, CancellationToken ct = default);
+        Task<IEnumerable<Entity>> GetAllAsync(CancellationToken ct = default);
+        Task AddAsync(Entity entity, CancellationToken ct = default);
+        void Update(Entity entity);
+        void Delete(Entity entity);
     }
 }

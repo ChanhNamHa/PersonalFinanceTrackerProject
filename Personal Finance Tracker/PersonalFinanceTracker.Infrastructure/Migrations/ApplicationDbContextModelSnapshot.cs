@@ -31,8 +31,17 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<decimal>("LimitAmount")
                         .HasPrecision(18, 2)
@@ -40,6 +49,12 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -61,6 +76,15 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWSEQUENTIALID()");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -71,6 +95,12 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
@@ -79,30 +109,40 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("a1b2c3d4-e5f6-4a1b-8c9d-0e1f2a3b4c5d"),
+                            CreatedAt = new DateTime(2026, 4, 5, 12, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
                             Name = "Lương hàng tháng",
                             Type = "Income"
                         },
                         new
                         {
                             Id = new Guid("b2c3d4e5-f6a1-4b2c-9d0e-1f2a3b4c5d6e"),
+                            CreatedAt = new DateTime(2026, 4, 5, 12, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
                             Name = "Ăn uống & Nhà hàng",
                             Type = "Expense"
                         },
                         new
                         {
                             Id = new Guid("c3d4e5f6-a1b2-4c3d-0e1f-2a3b4c5d6e7f"),
+                            CreatedAt = new DateTime(2026, 4, 5, 12, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
                             Name = "Di chuyển & Xăng xe",
                             Type = "Expense"
                         },
                         new
                         {
                             Id = new Guid("d4e5f6a1-b2c3-4d4e-1f2a-3b4c5d6e7f8a"),
+                            CreatedAt = new DateTime(2026, 4, 5, 12, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
                             Name = "Tiền thưởng Freelance",
                             Type = "Income"
                         },
                         new
                         {
                             Id = new Guid("e5f6a1b2-c3d4-4e5f-2a3b-4c5d6e7f8a9b"),
+                            CreatedAt = new DateTime(2026, 4, 5, 12, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
                             Name = "Hóa đơn Điện & Nước",
                             Type = "Expense"
                         });
@@ -127,12 +167,24 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Note")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -159,13 +211,28 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWSEQUENTIALID()");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
@@ -194,12 +261,18 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("DeviceInfo")
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
                     b.Property<DateTime>("ExpiresAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("ReplacedByTokenHash")
                         .HasMaxLength(256)
@@ -212,6 +285,12 @@ namespace PersonalFinanceTracker.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");

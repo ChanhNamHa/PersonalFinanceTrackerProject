@@ -1,12 +1,12 @@
-﻿using System;
+﻿using PersonalFinanceTracker.Domain.Common;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace PersonalFinanceTracker.Domain.Entities
 {
-    public class Budget
+    public class Budget : BaseEntity
     {
-        public Guid Id { get; set; }
         public decimal LimitAmount { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }

@@ -6,9 +6,8 @@ using System.Transactions;
 
 namespace PersonalFinanceTracker.Domain.Entities
 {
-    public class Category
+    public class Category : BaseEntity
     {
-        public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Type { get; set; } = CategoryTypes.Expense;
         public virtual ICollection<Budget> Budgets { get; set; } = new List<Budget>();

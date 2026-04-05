@@ -1,27 +1,33 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PersonalFinanceTracker.Application.Interfaces;
+using PersonalFinanceTracker.Domain.Common;
 
 namespace PersonalFinanceTracker.Infrastructure.Repositories
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<Entity> : IGenericRepository<Entity> where Entity : BaseEntity
     {
         protected readonly ApplicationDbContext _context;
-        protected readonly DbSet<T> _dbSet;
+        protected readonly DbSet<Entity> _dbSet;
 
         public GenericRepository(ApplicationDbContext context)
         {
             _context = context;
-            _dbSet = context.Set<T>();
+            _dbSet = context.Set<Entity>();
         }
 
-        public async Task<T?> GetByIdAsync(Guid id) => await _dbSet.FindAsync(id);
+        public async Task<Entity?> GetByIdAsync(Guid id, CancellationToken ct = default)
+                => await _dbSet.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id && !e.IsDeleted, ct);
 
-        public async Task<IEnumerable<T>> GetAllAsync() => await _dbSet.ToListAsync();
+        public async Task<IEnumerable<Entity>> GetAllAsync(CancellationToken ct = default)
+                => await _dbSet.AsNoTracking().Where(e => !e.IsDeleted).ToListAsync(ct);
+        public async Task AddAsync(Entity entity, CancellationToken ct = default)
+                => await _dbSet.AddAsync(entity, ct);
+        public void Update(Entity entity) => _dbSet.Update(entity);
 
-        public async Task AddAsync(T entity) => await _dbSet.AddAsync(entity);
-
-        public void Update(T entity) => _dbSet.Update(entity);
-
-        public void Delete(T entity) => _dbSet.Remove(entity);
+        public void Delete(Entity entity)
+        {
+            entity.IsDeleted = true;
+            _dbSet.Update(entity);
+        }
     }
 }

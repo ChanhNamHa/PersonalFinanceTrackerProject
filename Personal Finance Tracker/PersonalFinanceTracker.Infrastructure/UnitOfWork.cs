@@ -22,7 +22,20 @@ namespace PersonalFinanceTracker.Infrastructure.Repositories
             Budgets = new BudgetRepository(_context);
             RefreshTokens = new RefreshTokenRepository(_context);
         }
+        // Property cho Categories
+        //private ICategoryRepository _categories
 
+        //public ICategoryRepository Categories
+        //{
+        //    get
+        //    {
+        //        if (_categories == null)
+        //        {
+        //            _categories = new CategoryRepository(_context);
+        //        }
+        //        return _categories;
+        //    }
+        //}
         public async Task<int> CompleteAsync() => await _context.SaveChangesAsync();
 
         public void Dispose() => _context.Dispose();

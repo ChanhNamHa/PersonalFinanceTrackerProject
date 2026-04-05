@@ -38,7 +38,7 @@ namespace PersonalFinanceTracker.Tests.UnitTests.Services
             uowMock.Setup(u => u.CompleteAsync()).ReturnsAsync(1);
 
             var opts = Options.Create(new JwtOptions { Key = "test_key_which_is_long_enough_1234567890", Issuer = "test", Audience = "test", AccessTokenExpirationMinutes = 60, RefreshTokenExpirationDays = 7 });
-            var svc = new AuthService(opts, uowMock.Object);
+            var svc = new PersonalFinanceTracker.Application.Services.AuthService(opts, uowMock.Object);
 
             var req = new RegisterRequest("u1", "u1@example.com", "Password1A");
             var res = await svc.RegisterAsync(req);
@@ -59,7 +59,7 @@ namespace PersonalFinanceTracker.Tests.UnitTests.Services
             uowMock.SetupGet(u => u.Users).Returns(userRepoMock.Object);
 
             var opts = Options.Create(new JwtOptions { Key = "key", Issuer = "i", Audience = "a", AccessTokenExpirationMinutes = 60, RefreshTokenExpirationDays = 7 });
-            var svc = new AuthService(opts, uowMock.Object);
+            var svc = new PersonalFinanceTracker.Application.Services.AuthService(opts, uowMock.Object);
 
             await Assert.ThrowsAsync<Exception>(() => svc.RegisterAsync(new RegisterRequest("u","a@a.com","pass")));
         }
@@ -83,7 +83,7 @@ namespace PersonalFinanceTracker.Tests.UnitTests.Services
             uowMock.Setup(u => u.CompleteAsync()).ReturnsAsync(1);
 
             var opts = Options.Create(new JwtOptions { Key = "another_long_test_key_1234567890", Issuer = "i", Audience = "a", AccessTokenExpirationMinutes = 60, RefreshTokenExpirationDays = 7 });
-            var svc = new AuthService(opts, uowMock.Object);
+            var svc = new PersonalFinanceTracker.Application.Services.AuthService(opts, uowMock.Object);
 
             var response = await svc.LoginAsync(new LoginRequest(user.Email, password));
 
@@ -106,7 +106,7 @@ namespace PersonalFinanceTracker.Tests.UnitTests.Services
             uowMock.SetupGet(u => u.Users).Returns(userRepoMock.Object);
 
             var opts = Options.Create(new JwtOptions { Key = "k", Issuer = "i", Audience = "a", AccessTokenExpirationMinutes = 60, RefreshTokenExpirationDays = 7 });
-            var svc = new AuthService(opts, uowMock.Object);
+            var svc = new PersonalFinanceTracker.Application.Services.AuthService(opts, uowMock.Object);
 
             await Assert.ThrowsAsync<Exception>(() => svc.LoginAsync(new LoginRequest("no@no.com","x")));
         }

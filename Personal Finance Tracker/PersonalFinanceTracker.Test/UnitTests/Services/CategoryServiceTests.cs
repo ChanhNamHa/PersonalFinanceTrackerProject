@@ -6,7 +6,7 @@ using Moq;
 using PersonalFinanceTracker.Application.DTOs;
 using PersonalFinanceTracker.Application.Interfaces;
 using PersonalFinanceTracker.Domain.Entities;
-using PersonalFinanceTracker.Infrastructure.Services;
+using PersonalFinanceTracker.Application.Services;
 using Xunit;
 
 namespace PersonalFinanceTracker.Tests.UnitTests.Services

@@ -39,7 +39,7 @@ namespace PersonalFinanceTracker.Application.Services
                 PasswordHash = HashPassword(request.Password)
             };
 
-            await _uow.Users.AddAsync(user);
+            _uow.Users.Add(user);
             await _uow.CompleteAsync(); // Commit vào DB
 
             return "Đăng ký tài khoản thành công.";
@@ -68,7 +68,7 @@ namespace PersonalFinanceTracker.Application.Services
                 DeviceInfo = null
             };
 
-            await _uow.RefreshTokens.AddAsync(refreshTokenEntity);
+            _uow.RefreshTokens.Add(refreshTokenEntity);
             await _uow.CompleteAsync();
 
             return new AuthResponse(accessToken, refreshToken, user.Username);

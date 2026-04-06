@@ -6,7 +6,7 @@ namespace PersonalFinanceTracker.Application.Interfaces
     {
         Task<Entity?> GetByIdAsync(Guid id, CancellationToken ct = default);
         Task<IEnumerable<Entity>> GetAllAsync(CancellationToken ct = default);
-        Task AddAsync(Entity entity, CancellationToken ct = default);
+        Entity Add(Entity entity);
         void Update(Entity entity);
         void Delete(Entity entity);
     }

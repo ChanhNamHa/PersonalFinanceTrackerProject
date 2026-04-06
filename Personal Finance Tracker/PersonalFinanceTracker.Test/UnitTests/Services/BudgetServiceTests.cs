@@ -62,7 +62,7 @@ namespace PersonalFinanceTracker.Tests.UnitTests.Services
 
             var budgetsRepo = new Mock<IBudgetRepository>();
             budgetsRepo.Setup(r => r.IsOverlappingAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<DateTime>(), It.IsAny<DateTime>())).ReturnsAsync(false);
-            budgetsRepo.Setup(r => r.AddAsync(It.IsAny<Budget>())).Returns(Task.CompletedTask);
+            budgetsRepo.Setup(r => r.Add(It.IsAny<Budget>())).Returns((Budget b) => b);
 
             var categoriesRepo = new Mock<ICategoryRepository>();
             categoriesRepo.Setup(r => r.GetByIdAsync(categoryId)).ReturnsAsync(category);

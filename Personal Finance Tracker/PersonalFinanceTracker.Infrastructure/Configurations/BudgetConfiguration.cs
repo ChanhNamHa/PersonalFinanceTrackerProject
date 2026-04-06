@@ -10,8 +10,8 @@ namespace PersonalFinanceTracker.Infrastructure.Configurations
         {
             // 1. Khóa chính
             builder.HasKey(b => b.Id);
-            builder.Property(b => b.Id)
-                .HasDefaultValueSql("NEWSEQUENTIALID()");
+            builder.Property(b => b.Id);
+                //.HasDefaultValueSql("NEWSEQUENTIALID()");
 
             // 2. Số tiền hạn mức (Precision 18,2)
             builder.Property(b => b.LimitAmount)

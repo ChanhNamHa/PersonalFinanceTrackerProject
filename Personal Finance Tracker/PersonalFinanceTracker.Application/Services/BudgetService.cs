@@ -37,7 +37,7 @@ namespace PersonalFinanceTracker.Application.Services
                 CategoryId = request.CategoryId
             };
 
-            await _uow.Budgets.AddAsync(budget);
+            _uow.Budgets.Add(budget);
             await _uow.CompleteAsync();
 
             return await MapToResponse(budget);

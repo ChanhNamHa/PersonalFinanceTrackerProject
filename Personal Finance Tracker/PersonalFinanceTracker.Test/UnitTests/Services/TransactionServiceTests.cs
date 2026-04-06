@@ -60,7 +60,7 @@ namespace PersonalFinanceTracker.Tests.UnitTests.Services
             categoriesRepo.Setup(r => r.GetByIdAsync(categoryId)).ReturnsAsync(category);
 
             var transactionsRepo = new Mock<ITransactionRepository>();
-            transactionsRepo.Setup(r => r.AddAsync(It.IsAny<Transaction>())).Returns(Task.CompletedTask);
+            transactionsRepo.Setup(r => r.Add(It.IsAny<Transaction>())).Returns((Transaction t) => t);
             transactionsRepo.Setup(r => r.GetTotalSpentAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<DateTime>(), It.IsAny<DateTime>())).ReturnsAsync(0m);
 
             uowMock.SetupGet(x => x.Categories).Returns(categoriesRepo.Object);
@@ -75,7 +75,7 @@ namespace PersonalFinanceTracker.Tests.UnitTests.Services
 
             res.Should().NotBeNull();
             res.CategoryName.Should().Be(category.Name);
-            transactionsRepo.Verify(r => r.AddAsync(It.IsAny<Transaction>()), Times.Once);
+            transactionsRepo.Verify(r => r.Add(It.IsAny<Transaction>()), Times.Once);
             uowMock.Verify(u => u.CompleteAsync(), Times.Once);
         }
 

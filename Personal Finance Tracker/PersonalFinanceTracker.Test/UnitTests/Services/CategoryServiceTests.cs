@@ -43,7 +43,7 @@ namespace PersonalFinanceTracker.Tests.UnitTests.Services
 
             var catRepo = new Mock<ICategoryRepository>();
             catRepo.Setup(r => r.GetByNameAsync(req.Name)).ReturnsAsync((Category?)null);
-            catRepo.Setup(r => r.AddAsync(It.IsAny<Category>())).Returns(Task.CompletedTask);
+            catRepo.Setup(r => r.Add(It.IsAny<Category>())).Returns((Category c) => c);
 
             var uow = new Mock<IUnitOfWork>();
             uow.SetupGet(x => x.Categories).Returns(catRepo.Object);
@@ -54,7 +54,7 @@ namespace PersonalFinanceTracker.Tests.UnitTests.Services
 
             res.Name.Should().Be(req.Name);
             res.Type.Should().Be(req.Type);
-            catRepo.Verify(r => r.AddAsync(It.Is<Category>(c => c.Name == req.Name && c.Type == req.Type)), Times.Once);
+            catRepo.Verify(r => r.Add(It.Is<Category>(c => c.Name == req.Name && c.Type == req.Type)), Times.Once);
             uow.Verify(x => x.CompleteAsync(), Times.Once);
         }
 

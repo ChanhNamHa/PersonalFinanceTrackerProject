@@ -35,7 +35,7 @@ namespace PersonalFinanceTracker.Tests.UnitTests.Services
 
             var refreshRepo = new Mock<IRefreshTokenRepository>();
             refreshRepo.Setup(r => r.GetByTokenHashAsync(It.IsAny<string>())).ReturnsAsync(existing);
-            refreshRepo.Setup(r => r.AddAsync(It.IsAny<UserRefreshToken>())).Returns(Task.CompletedTask);
+            refreshRepo.Setup(r => r.Add(It.IsAny<UserRefreshToken>())).Returns((UserRefreshToken t) => t);
             refreshRepo.Setup(r => r.Update(It.IsAny<UserRefreshToken>()));
 
             var userRepo = new Mock<IUserRepository>();
@@ -56,7 +56,7 @@ namespace PersonalFinanceTracker.Tests.UnitTests.Services
             res.AccessToken.Should().NotBeNullOrWhiteSpace();
             res.RefreshToken.Should().NotBeNullOrWhiteSpace();
 
-            refreshRepo.Verify(r => r.AddAsync(It.IsAny<UserRefreshToken>()), Times.Once);
+            refreshRepo.Verify(r => r.Add(It.IsAny<UserRefreshToken>()), Times.Once);
             refreshRepo.Verify(r => r.Update(It.Is<UserRefreshToken>(t => t.ReplacedByTokenHash != null && t.RevokedAt != null)), Times.Once);
             uowMock.Verify(x => x.CompleteAsync(), Times.Once);
         }

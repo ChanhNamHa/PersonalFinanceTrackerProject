@@ -20,8 +20,10 @@ namespace PersonalFinanceTracker.Infrastructure.Repositories
 
         public async Task<IEnumerable<Entity>> GetAllAsync(CancellationToken ct = default)
                 => await _dbSet.AsNoTracking().Where(e => !e.IsDeleted).ToListAsync(ct);
-        public async Task AddAsync(Entity entity, CancellationToken ct = default)
-                => await _dbSet.AddAsync(entity, ct);
+        public Entity Add(Entity entity)
+        {
+            return _dbSet.Add(entity).Entity;
+        }
         public void Update(Entity entity) => _dbSet.Update(entity);
 
         public void Delete(Entity entity)

@@ -53,7 +53,7 @@ namespace PersonalFinanceTracker.Application.Services {
                 CreatedAt = DateTime.UtcNow
             };
 
-            await _uow.Transactions.AddAsync(transaction);
+            _uow.Transactions.Add(transaction);
             await _uow.CompleteAsync();
 
             // 4. Trả về Record DTO (Sử dụng Target-typed new)

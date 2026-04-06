@@ -31,7 +31,7 @@ namespace PersonalFinanceTracker.Tests.UnitTests.Services
         {
             var userRepoMock = new Mock<IUserRepository>();
             userRepoMock.Setup(r => r.GetByEmailAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
-            userRepoMock.Setup(r => r.AddAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
+            userRepoMock.Setup(r => r.Add(It.IsAny<User>())).Returns((User u) => u);
 
             var uowMock = new Mock<IUnitOfWork>();
             uowMock.SetupGet(u => u.Users).Returns(userRepoMock.Object);
@@ -44,7 +44,7 @@ namespace PersonalFinanceTracker.Tests.UnitTests.Services
             var res = await svc.RegisterAsync(req);
 
             res.Should().Be("Đăng ký tài khoản thành công.");
-            userRepoMock.Verify(r => r.AddAsync(It.Is<User>(u => u.Email == req.Email && u.Username == req.Username)), Times.Once);
+            userRepoMock.Verify(r => r.Add(It.Is<User>(u => u.Email == req.Email && u.Username == req.Username)), Times.Once);
             uowMock.Verify(u => u.CompleteAsync(), Times.Once);
         }
 
@@ -75,7 +75,7 @@ namespace PersonalFinanceTracker.Tests.UnitTests.Services
             userRepoMock.Setup(r => r.GetByEmailAsync(user.Email)).ReturnsAsync(user);
 
             var refreshRepoMock = new Mock<IRefreshTokenRepository>();
-            refreshRepoMock.Setup(r => r.AddAsync(It.IsAny<UserRefreshToken>())).Returns(Task.CompletedTask);
+            refreshRepoMock.Setup(r => r.Add(It.IsAny<UserRefreshToken>())).Returns((UserRefreshToken t) => t);
 
             var uowMock = new Mock<IUnitOfWork>();
             uowMock.SetupGet(u => u.Users).Returns(userRepoMock.Object);
@@ -92,7 +92,7 @@ namespace PersonalFinanceTracker.Tests.UnitTests.Services
             response.AccessToken.Should().NotBeNullOrWhiteSpace();
             response.RefreshToken.Should().NotBeNullOrWhiteSpace();
 
-            refreshRepoMock.Verify(r => r.AddAsync(It.IsAny<UserRefreshToken>()), Times.Once);
+            refreshRepoMock.Verify(r => r.Add(It.IsAny<UserRefreshToken>()), Times.Once);
             uowMock.Verify(u => u.CompleteAsync(), Times.Once);
         }
 

@@ -9,7 +9,8 @@ namespace PersonalFinanceTracker.Infrastructure.Configurations
         public void Configure(EntityTypeBuilder<UserRefreshToken> builder)
         {
             builder.HasKey(urt => urt.Id);
-            builder.Property(urt => urt.Id).HasDefaultValueSql("NEWSEQUENTIALID()");
+            builder.Property(urt => urt.Id);
+            //.HasDefaultValueSql("NEWSEQUENTIALID()");
 
             builder.Property(urt => urt.TokenHash)
                 .HasMaxLength(256)

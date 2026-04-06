@@ -54,7 +54,7 @@ namespace PersonalFinanceTracker.Application.Services
                 DeviceInfo = null
             };
 
-            await _uow.RefreshTokens.AddAsync(newTokenEntity);
+            _uow.RefreshTokens.Add(newTokenEntity);
             _uow.RefreshTokens.Update(existing);
             await _uow.CompleteAsync();
 
